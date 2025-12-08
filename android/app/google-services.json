@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "568581207106",
+    "project_id": "typaapp-5e868",
+    "storage_bucket": "typaapp-5e868.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:568581207106:android:4d702dd4609c3a892169db",
+        "android_client_info": {
+          "package_name": "com.example.typa_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqMUvS1SJ3-EbTnAdIZtAzVtmyJ7vdblU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
