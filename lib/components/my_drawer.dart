@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:typa_app/auth/auth_service.dart';
+import 'package:typa_app/pages/settings_page.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});
+
+  void logout() {
+    // get auth service
+    final _auth = AuthService();
+    _auth.signOut();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +39,10 @@ class MyDrawer extends StatelessWidget {
                 child: ListTile(
                   title: Text("H O M E"),
                   leading: Icon(Icons.home),
-                  onTap: () {},
+                  onTap: () {
+                    // pop the drawer
+                    Navigator.pop(context);
+                  },
                 ),
               ),
 
@@ -41,7 +52,18 @@ class MyDrawer extends StatelessWidget {
                 child: ListTile(
                   title: Text("S E T T I N G S"),
                   leading: Icon(Icons.settings),
-                  onTap: () {},
+                  onTap: () {
+                    // pop the drawer
+                    Navigator.pop(context);
+
+                    // navigate to settings page
+                    Navigator.push(
+                      context, 
+                      MaterialPageRoute(
+                        builder: (context) => SettingsPage(),
+                      ),
+                    );
+                  },
                 ),
               ),
 
@@ -55,7 +77,7 @@ class MyDrawer extends StatelessWidget {
             child: ListTile(
               title: Text("L O G O U T"),
               leading: Icon(Icons.logout),
-              onTap: () {},
+              onTap: logout,
             ),
           ),
           
