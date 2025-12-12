@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:typa_app/components/my_textfield.dart';
 import 'package:typa_app/services/auth/auth_service.dart';
 import 'package:typa_app/services/chat/chat_service.dart';
 
@@ -42,11 +43,13 @@ class ChatPage extends StatelessWidget {
           // display all messages
           Expanded(
             child: _buildMessageList(),
-          )
+          ),
 
           // user input
+          _buildUserInput(),
 
-        ],),
+        ],
+      ),
     );
   }
 
@@ -81,4 +84,27 @@ class ChatPage extends StatelessWidget {
 
     return Text(data["message"]);
   }
+
+  // build message input
+  Widget _buildUserInput() {
+    return Row(
+      children: [
+        // textfield should take up most of the space
+        Expanded(
+          child: MyTextField(
+            controller: _messageController,
+            hintText: "Type a message",
+            obscureText: false,
+          )
+        ),
+
+        // send button
+        IconButton(
+          onPressed: sendMessage, 
+          icon: const Icon(Icons.arrow_upward),
+        ),
+
+      ],
+    );
+  } 
 }
