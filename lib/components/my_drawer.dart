@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:typa_app/auth/auth_service.dart';
+import 'package:typa_app/services/auth/auth_service.dart';
 import 'package:typa_app/pages/settings_page.dart';
 
 class MyDrawer extends StatelessWidget {
@@ -7,8 +7,8 @@ class MyDrawer extends StatelessWidget {
 
   void logout() {
     // get auth service
-    final _auth = AuthService();
-    _auth.signOut();
+    final auth = AuthService();
+    auth.signOut();
   }
 
   @override
@@ -37,8 +37,8 @@ class MyDrawer extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 25.0),
                 child: ListTile(
-                  title: Text("H O M E"),
-                  leading: Icon(Icons.home),
+                  title: const Text("H O M E"),
+                  leading: const Icon(Icons.home),
                   onTap: () {
                     // pop the drawer
                     Navigator.pop(context);
@@ -50,8 +50,8 @@ class MyDrawer extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 25.0),
                 child: ListTile(
-                  title: Text("S E T T I N G S"),
-                  leading: Icon(Icons.settings),
+                  title: const Text("S E T T I N G S"),
+                  leading: const Icon(Icons.settings),
                   onTap: () {
                     // pop the drawer
                     Navigator.pop(context);
@@ -60,7 +60,7 @@ class MyDrawer extends StatelessWidget {
                     Navigator.push(
                       context, 
                       MaterialPageRoute(
-                        builder: (context) => SettingsPage(),
+                        builder: (context) => const SettingsPage(),
                       ),
                     );
                   },
@@ -75,7 +75,7 @@ class MyDrawer extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(left: 25.0, bottom: 25),
             child: ListTile(
-              title: Text("L O G O U T"),
+              title: const Text("L O G O U T"),
               leading: Icon(Icons.logout),
               onTap: logout,
             ),
