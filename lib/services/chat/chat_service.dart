@@ -28,10 +28,10 @@ class ChatService {
     final String currentUserEmail = _auth.currentUser!.email!;
     final Timestamp timestamp = Timestamp.now();
 
-    // cerate a new message
+    // create a new message
     Message newMessage = Message(
-      senderID: currentUserEmail, 
-      senderEmail: currentUserID, 
+      senderID: currentUserID, 
+      senderEmail: currentUserEmail, 
       receiverID: receiverID, 
       message: message, 
       timestamp: timestamp
