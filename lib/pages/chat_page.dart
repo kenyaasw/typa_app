@@ -41,7 +41,7 @@ class ChatPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(receiverEmail),
         backgroundColor: Colors.transparent,
-        foregroundColor: Colors.grey.shade800,
+        foregroundColor: Colors.grey.shade700,
         elevation: 0,
       ),
       body: Column(
@@ -123,8 +123,8 @@ class ChatPage extends StatelessWidget {
       
           // send button
           Container(
-            decoration: const BoxDecoration(
-              color: Colors.green,
+            decoration: BoxDecoration(
+              color: Colors.blue.shade400,
               shape: BoxShape.circle,
             ),
             margin: const EdgeInsets.only(right: 25),
