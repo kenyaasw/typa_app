@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:typa_app/components/chat_bubble.dart';
 import 'package:typa_app/components/my_textfield.dart';
 import 'package:typa_app/services/auth/auth_service.dart';
 import 'package:typa_app/services/chat/chat_service.dart';
@@ -37,7 +38,12 @@ class ChatPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(receiverEmail),),
+      appBar: AppBar(
+        title: Text(receiverEmail),
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.grey.shade800,
+        elevation: 0,
+      ),
       body: Column(
         children: [
           // display all messages
@@ -93,9 +99,8 @@ class ChatPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
-          Text(
-            data["message"]
-          ),
+          // Text(data["message"]),
+          ChatBubble(message: data["message"], isCurrentUser: isCurrentUser,)
         ],
       )
     );
@@ -122,10 +127,13 @@ class ChatPage extends StatelessWidget {
               color: Colors.green,
               shape: BoxShape.circle,
             ),
-            margin: const EdgeInsets.only(right: 20),
+            margin: const EdgeInsets.only(right: 25),
             child: IconButton(
               onPressed: sendMessage, 
-              icon: const Icon(Icons.arrow_upward),
+              icon: const Icon(
+                Icons.arrow_upward, 
+                color: Colors.white,
+              ),
             ),
           ),
       
