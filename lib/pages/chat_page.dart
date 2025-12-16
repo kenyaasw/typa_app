@@ -46,6 +46,12 @@ class _ChatPageState extends State<ChatPage> {
         );
       }
     });
+
+    // wait a bit for listview to be built, then scroll to bottom
+    Future.delayed(
+      const Duration(milliseconds: 500),
+      () => scrollDown(),
+    );
   }
 
   @override
@@ -75,6 +81,8 @@ class _ChatPageState extends State<ChatPage> {
 
       // clear text controller
       _messageController.clear();
+
+      scrollDown();
     }
   }
 
@@ -162,6 +170,7 @@ class _ChatPageState extends State<ChatPage> {
               controller: _messageController,
               hintText: "Type a message",
               obscureText: false,
+              focusNode: myFocusNode,
             )
           ),
       
