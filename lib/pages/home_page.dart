@@ -18,7 +18,7 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Home"),
         backgroundColor: Colors.transparent,
-        foregroundColor: Colors.grey.shade700,
+        foregroundColor: Colors.grey.shade600,
         elevation: 0,
       ),
       drawer: const MyDrawer(),

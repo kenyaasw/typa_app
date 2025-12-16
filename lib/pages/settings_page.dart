@@ -13,7 +13,7 @@ class SettingsPage extends StatelessWidget {
       appBar: AppBar(
         title: Text("Settings"),
         backgroundColor: Colors.transparent,
-        foregroundColor: Colors.grey.shade700,
+        foregroundColor: Colors.grey.shade600,
         elevation: 0,
       ),
       body: Container(
