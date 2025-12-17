@@ -23,7 +23,32 @@ class ChatService extends ChangeNotifier {
   }
 
   // get all users stream except blocked users
-  
+  Stream<List<Map<String, dynamic>>> getUsersStreamExcludingBlocked() {
+    final currentUser = _auth.currentUser;
+    
+    return _firestore
+    .collection('Users')
+    .doc(currentUser!.uid)
+    .collection('BlockedUsers')
+    .snapshots()
+    .asyncMap((snapshot) async {
+
+      // get blocked user ids
+      final blockedUserIds = snapshot.docs.map((doc) => doc.id).toList();
+
+      // get all users
+      final usersSnapshot = await _firestore.collection('Users').get();  
+
+      // return as stream list
+      return usersSnapshot.docs
+      .where((doc) => 
+        doc.data()['email'] != currentUser.email && 
+        !blockedUserIds.contains(doc.id))
+      .map((doc) => doc.data())
+      .toList();
+
+    });
+  }
 
   // send message
   Future<void> sendMessage(String receiverID, message) async {
@@ -108,24 +133,24 @@ class ChatService extends ChangeNotifier {
   // get blocked users stream
   Stream<List<Map<String, dynamic>>> getBlockedUsersStream(String userId) {
     return _firestore
-      .collection('Users')
-      .doc(userId)
-      .collection('BlockedUsers')
-      .snapshots()
-      .asyncMap((snapshot) async {
+    .collection('Users')
+    .doc(userId)
+    .collection('BlockedUsers')
+    .snapshots()
+    .asyncMap((snapshot) async {
 
-        // get list of blocked user ids
-        final blockedUserIds = snapshot.docs.map((doc) => doc.id).toList();
+      // get list of blocked user ids
+      final blockedUserIds = snapshot.docs.map((doc) => doc.id).toList();
 
-        final userDocs = await Future.wait(
-          blockedUserIds
-          .map((id) => _firestore.collection('Users').doc(id).get()),
-        );
+      final userDocs = await Future.wait(
+        blockedUserIds
+        .map((id) => _firestore.collection('Users').doc(id).get()),
+      );
 
-        // return as a list
-        return userDocs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+      // return as a list
+      return userDocs.map((doc) => doc.data() as Map<String, dynamic>).toList();
 
-      });
+    });
   }
 
 }
