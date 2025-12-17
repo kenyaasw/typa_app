@@ -39,7 +39,7 @@ class ChatService extends ChangeNotifier {
       // get all users
       final usersSnapshot = await _firestore.collection('Users').get();  
 
-      // return as stream list
+      // return as stream list, excluding current user and blocked users
       return usersSnapshot.docs
       .where((doc) => 
         doc.data()['email'] != currentUser.email && 
