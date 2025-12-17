@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:typa_app/models/message.dart';
-// import 'package:flutter/material.dart';
 
-class ChatService {
+class ChatService extends ChangeNotifier {
 
-  // get instance of firestore & auth
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  // get instance of auth and firestore
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // get user stream
   Stream<List<Map<String, dynamic>>> getUsersStream() {
@@ -23,6 +23,7 @@ class ChatService {
   }
 
   // get all users stream except blocked users
+  
 
   // send message
   Future<void> sendMessage(String receiverID, message) async {
@@ -90,7 +91,7 @@ class ChatService {
       .collection('BlockedUsers')
       .doc(userId)
       .set({});
-    // notifyListeners();
+    notifyListeners();
   }
 
   // unblock user
@@ -105,4 +106,26 @@ class ChatService {
   }
 
   // get blocked users stream
+  Stream<List<Map<String, dynamic>>> getBlockedUsersStream(String userId) {
+    return _firestore
+      .collection('Users')
+      .doc(userId)
+      .collection('BlockedUsers')
+      .snapshots()
+      .asyncMap((snapshot) async {
+
+        // get list of blocked user ids
+        final blockedUserIds = snapshot.docs.map((doc) => doc.id).toList();
+
+        final userDocs = await Future.wait(
+          blockedUserIds
+          .map((id) => _firestore.collection('Users').doc(id).get()),
+        );
+
+        // return as a list
+        return userDocs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+
+      });
+  }
+
 }
