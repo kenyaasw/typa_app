@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:typa_app/services/chat/chat_service.dart';
 import 'package:typa_app/themes/theme_provider.dart';
 
 class ChatBubble extends StatelessWidget {
@@ -29,13 +30,28 @@ class ChatBubble extends StatelessWidget {
                 leading: const Icon(Icons.flag),
                 title: const Text('Report'),
                 onTap: () {
-
+                  Navigator.pop(context);
+                  _reportMessage(context, messageId, userId);
                 },
-              )
+              ),
 
               // block user button
+              ListTile(
+                leading: const Icon(Icons.block),
+                title: const Text('Block User'),
+                onTap: () {
+
+                },
+              ),
 
               // cancel button
+              ListTile(
+                leading: const Icon(Icons.cancel),
+                title: const Text('Cancel'),
+                onTap: () {
+
+                },
+              ),
 
             ],
           ));
@@ -44,6 +60,35 @@ class ChatBubble extends StatelessWidget {
   } 
 
   // report message
+  void _reportMessage(BuildContext context, String messageId, String userId) {
+    showDialog(
+      context: context, 
+      builder: (context) => AlertDialog(
+        title: const Text("Report Message"),
+        content: const Text("Are you sure you want to report this message?"),
+        actions: [
+
+          // cancel button
+          TextButton(
+            onPressed: () => Navigator.pop(context), 
+            child: const Text("Cancel"),
+          ),
+
+          // report button
+          TextButton(
+            onPressed: () {
+              ChatService().reportUser(messageId, userId);
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Message Reported"))
+              );
+            },
+            child: const Text("Report"),
+          ),
+        ],
+      ),
+    );
+  }
 
   // block user
 
