@@ -5,33 +5,77 @@ import 'package:typa_app/themes/theme_provider.dart';
 class ChatBubble extends StatelessWidget {
   final String message;
   final bool isCurrentUser;
+  final String messageId;
+  final String userId;
 
   const ChatBubble({
     super.key,
     required this.message,
     required this.isCurrentUser,
+    required this.messageId,
+    required this.userId,
   });
+
+  // show options
+  void _showOptions (BuildContext context, String messageId, String userId) {
+    showModalBottomSheet(
+      context: context, 
+      builder: (context) {
+        return SafeArea(
+          child: Wrap(
+            children: [
+              // report message button
+              ListTile(
+                leading: const Icon(Icons.flag),
+                title: const Text('Report'),
+                onTap: () {
+
+                },
+              )
+
+              // block user button
+
+              // cancel button
+
+            ],
+          ));
+      }
+    );
+  } 
+
+  // report message
+
+  // block user
 
   @override
   Widget build(BuildContext context) {
     // light mode vs dark mode for correct bubble colors
     bool isDarkMode = Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: isCurrentUser 
-        ? (isDarkMode ? const Color.fromARGB(255, 24, 93, 153) : const Color.fromARGB(255, 146, 200, 244))
-        : (isDarkMode ? Colors.grey.shade800 : Colors.grey.shade200),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      padding: const EdgeInsets.all(16),
-      margin: const EdgeInsets.symmetric(vertical: 3, horizontal: 25,),
-      child: Text(
-        message,
-        style: TextStyle(
-          color: isCurrentUser
-          ? (isDarkMode ? Colors.white : Colors.black)
-          : (isDarkMode ? Colors.white : Colors.black),
+    return GestureDetector(
+      onLongPress: () {
+        if (!isCurrentUser) {
+          // show options
+          _showOptions(context, messageId, userId);
+
+        }
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: isCurrentUser 
+          ? (isDarkMode ? const Color.fromARGB(255, 24, 93, 153) : const Color.fromARGB(255, 146, 200, 244))
+          : (isDarkMode ? Colors.grey.shade800 : Colors.grey.shade200),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.symmetric(vertical: 3, horizontal: 25,),
+        child: Text(
+          message,
+          style: TextStyle(
+            color: isCurrentUser
+            ? (isDarkMode ? Colors.white : Colors.black)
+            : (isDarkMode ? Colors.white : Colors.black),
+          ),
         ),
       ),
     );
