@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:typa_app/components/chat_bubble.dart';
+// import 'package:typa_app/components/my_app_bar';
 import 'package:typa_app/components/my_textfield.dart';
 import 'package:typa_app/services/auth/auth_service.dart';
 import 'package:typa_app/services/chat/chat_service.dart';
@@ -9,7 +10,7 @@ class ChatPage extends StatefulWidget {
   final String receiverEmail;
   final String receiverID;
 
-  ChatPage({
+  const ChatPage({
     super.key,
     required this.receiverEmail,
     required this.receiverID,
@@ -40,41 +41,31 @@ class _ChatPageState extends State<ChatPage> {
         // cause a delay so that the keyboard has time to show up
         // then the amount of remaining space will be calculated,
         // then scroll down
-        Future.delayed(
-          const Duration(milliseconds: 500),
-          () => scrollDown(),
-        );
+        Future.delayed(const Duration(milliseconds: 500), () {
+          _scrollDown();
+        });
+      } else {
+        print("TextField has lost focus");
       }
     });
 
     // wait a bit for listview to be built, then scroll to bottom
-    Future.delayed(
-      const Duration(milliseconds: 500),
-      () => scrollDown(),
-    );
+    Future.delayed(const Duration(milliseconds: 500), () {
+      _scrollDown();
+    });
   }
 
   @override
   void dispose() {
+    // clean up the focus node when the form is disposed
     myFocusNode.dispose();
-    _messageController.dispose();
+    // _messageController.dispose();
     super.dispose();
   }
 
-  // scroll controller
-  final ScrollController _scrollController = ScrollController();
-  void scrollDown() {
-    _scrollController.animateTo(
-      _scrollController.position.maxScrollExtent, 
-      duration: const Duration(seconds: 1), 
-      curve: Curves.fastOutSlowIn,
-    );
-  }
-
-
   // send message
   void sendMessage() async {
-    // if there is something inside the textfield
+    // if there is something typed to send
     if (_messageController.text.isNotEmpty) {
       // send the message
       await _chatService.sendMessage(widget.receiverID, _messageController.text);
@@ -82,7 +73,7 @@ class _ChatPageState extends State<ChatPage> {
       // clear text controller
       _messageController.clear();
 
-      scrollDown();
+      _scrollDown();
     }
   }
 
@@ -110,6 +101,16 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
+  // scroll controller
+  final ScrollController _scrollController = ScrollController();
+  void _scrollDown() {
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent, 
+      duration: const Duration(seconds: 1), 
+      curve: Curves.fastOutSlowIn,
+    );
+  }
+
   // build message list
   Widget _buildMessageList() {
     String senderID = _authService.getCurrentUser()!.uid;
@@ -118,7 +119,7 @@ class _ChatPageState extends State<ChatPage> {
       builder: (context, snapshot) {
         // errors
         if (snapshot.hasError) {
-          return const Text("Error");
+          return Text('Error${snapshot.error}');
         }
 
         // loading
