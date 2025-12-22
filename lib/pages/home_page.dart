@@ -29,7 +29,7 @@ class HomePage extends StatelessWidget {
   // build a list of users except fr the current logged in user
   Widget _buildUserList() {
     return StreamBuilder(
-      stream: _chatService.getUsersStream(), 
+      stream: _chatService.getUsersStreamExcludingBlocked(),
       builder: (context, snapshot) {
         // error
         if (snapshot.hasError) {
@@ -43,37 +43,38 @@ class HomePage extends StatelessWidget {
 
         // return list view
         return ListView(
-          children: snapshot.data!.map<Widget>((userData) => _buildUserListItem(userData, context)).toList(),
+          children: snapshot.data!
+              .map<Widget>((userData) => _buildUserListItem(userData, context))
+              .toList(),
         );
-
-      }
+      },
     );
   }
 
   // build individual list tile for user
-  Widget _buildUserListItem(Map<String, dynamic> userData, BuildContext context) {
+  Widget _buildUserListItem(
+    Map<String, dynamic> userData,
+    BuildContext context,
+  ) {
     // display all users except current user
     if (userData["email"] != _authService.getCurrentUser()!.email) {
       return UserTile(
-      text: userData["email"],
-      onTap: () {
-        // tapped on a user -> go to chat page
-        Navigator.push(
-          context, 
-          MaterialPageRoute(
-            builder: (context) => ChatPage(
-              receiverEmail: userData["email"],
-              receiverID: userData["uid"],
+        text: userData["email"],
+        onTap: () {
+          // tapped on a user -> go to chat page
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ChatPage(
+                receiverEmail: userData["email"],
+                receiverID: userData["uid"],
+              ),
             ),
-          ),
-        ); 
-      },
+          );
+        },
       );
     } else {
       return Container();
     }
-
-    
   }
-
 }
