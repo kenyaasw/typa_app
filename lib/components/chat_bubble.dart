@@ -18,9 +18,9 @@ class ChatBubble extends StatelessWidget {
   });
 
   // show options
-  void _showOptions (BuildContext context, String messageId, String userId) {
+  void _showOptions(BuildContext context, String messageId, String userId) {
     showModalBottomSheet(
-      context: context, 
+      context: context,
       builder: (context) {
         return SafeArea(
           child: Wrap(
@@ -51,25 +51,24 @@ class ChatBubble extends StatelessWidget {
                 title: const Text('Cancel'),
                 onTap: () => Navigator.pop(context),
               ),
-
             ],
-          ));
-      }
+          ),
+        );
+      },
     );
-  } 
+  }
 
   // report message
   void _reportMessage(BuildContext context, String messageId, String userId) {
     showDialog(
-      context: context, 
+      context: context,
       builder: (context) => AlertDialog(
         title: const Text("Report Message"),
         content: const Text("Are you sure you want to report this message?"),
         actions: [
-
           // cancel button
           TextButton(
-            onPressed: () => Navigator.pop(context), 
+            onPressed: () => Navigator.pop(context),
             child: const Text("Cancel"),
           ),
 
@@ -78,9 +77,9 @@ class ChatBubble extends StatelessWidget {
             onPressed: () {
               ChatService().reportUser(messageId, userId);
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Message Reported"))
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(const SnackBar(content: Text("Message Reported")));
             },
             child: const Text("Report"),
           ),
@@ -92,26 +91,30 @@ class ChatBubble extends StatelessWidget {
   // block user
   void _blockUser(BuildContext context, String userId) {
     showDialog(
-      context: context, 
+      context: context,
       builder: (context) => AlertDialog(
         title: const Text("Block User"),
         content: const Text("Are you sure you want to block this user?"),
         actions: [
-
           // cancel button
           TextButton(
-            onPressed: () => Navigator.pop(context), 
+            onPressed: () => Navigator.pop(context),
             child: const Text("Cancel"),
           ),
 
           // block button
           TextButton(
             onPressed: () {
+              // perform block
               ChatService().blockUser(userId);
+              // dismiss dialog
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("User Blocked"))
-              );
+              // dismiss page
+              Navigator.pop(context);
+              // let user know of result
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(const SnackBar(content: Text("User Blocked")));
             },
             child: const Text("Block"),
           ),
@@ -123,31 +126,35 @@ class ChatBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // light mode vs dark mode for correct bubble colors
-    bool isDarkMode = Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
+    bool isDarkMode = Provider.of<ThemeProvider>(
+      context,
+      listen: false,
+    ).isDarkMode;
 
     return GestureDetector(
       onLongPress: () {
         if (!isCurrentUser) {
           // show options
           _showOptions(context, messageId, userId);
-
         }
       },
       child: Container(
         decoration: BoxDecoration(
-          color: isCurrentUser 
-          ? (isDarkMode ? const Color.fromARGB(255, 24, 93, 153) : const Color.fromARGB(255, 146, 200, 244))
-          : (isDarkMode ? Colors.grey.shade800 : Colors.grey.shade200),
+          color: isCurrentUser
+              ? (isDarkMode
+                    ? const Color.fromARGB(255, 24, 93, 153)
+                    : const Color.fromARGB(255, 146, 200, 244))
+              : (isDarkMode ? Colors.grey.shade800 : Colors.grey.shade200),
           borderRadius: BorderRadius.circular(12),
         ),
         padding: const EdgeInsets.all(16),
-        margin: const EdgeInsets.symmetric(vertical: 3, horizontal: 25,),
+        margin: const EdgeInsets.symmetric(vertical: 3, horizontal: 25),
         child: Text(
           message,
           style: TextStyle(
             color: isCurrentUser
-            ? (isDarkMode ? Colors.white : Colors.black)
-            : (isDarkMode ? Colors.white : Colors.black),
+                ? (isDarkMode ? Colors.white : Colors.black)
+                : (isDarkMode ? Colors.white : Colors.black),
           ),
         ),
       ),
