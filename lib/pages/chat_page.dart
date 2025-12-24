@@ -36,23 +36,23 @@ class _ChatPageState extends State<ChatPage> {
     super.initState();
 
     // add listener to focus node
-    myFocusNode.addListener(() {
-      if (myFocusNode.hasFocus) {
-        // cause a delay so that the keyboard has time to show up
-        // then the amount of remaining space will be calculated,
-        // then scroll down
-        Future.delayed(const Duration(milliseconds: 500), () {
-          _scrollDown();
-        });
-      } else {
-        print("TextField has lost focus");
-      }
-    });
+    // myFocusNode.addListener(() {
+    //   if (myFocusNode.hasFocus) {
+    //     // cause a delay so that the keyboard has time to show up
+    //     // then the amount of remaining space will be calculated,
+    //     // then scroll down
+    //     Future.delayed(const Duration(milliseconds: 500), () {
+    //       _scrollDown();
+    //     });
+    //   } else {
+    //     print("TextField has lost focus");
+    //   }
+    // });
 
-    // wait a bit for listview to be built, then scroll to bottom
-    Future.delayed(const Duration(milliseconds: 500), () {
-      _scrollDown();
-    });
+    // // wait a bit for listview to be built, then scroll to bottom
+    // Future.delayed(const Duration(milliseconds: 500), () {
+    //   _scrollDown();
+    // });
   }
 
   @override
@@ -68,7 +68,10 @@ class _ChatPageState extends State<ChatPage> {
     // if there is something typed to send
     if (_messageController.text.isNotEmpty) {
       // send the message
-      await _chatService.sendMessage(widget.receiverID, _messageController.text);
+      await _chatService.sendMessage(
+        widget.receiverID,
+        _messageController.text,
+      );
 
       // clear text controller
       _messageController.clear();
@@ -89,13 +92,10 @@ class _ChatPageState extends State<ChatPage> {
       body: Column(
         children: [
           // display all messages
-          Expanded(
-            child: _buildMessageList(),
-          ),
+          Expanded(child: _buildMessageList()),
 
           // user input
           _buildUserInput(),
-
         ],
       ),
     );
@@ -105,8 +105,8 @@ class _ChatPageState extends State<ChatPage> {
   final ScrollController _scrollController = ScrollController();
   void _scrollDown() {
     _scrollController.animateTo(
-      _scrollController.position.maxScrollExtent, 
-      duration: const Duration(seconds: 1), 
+      _scrollController.position.maxScrollExtent,
+      duration: const Duration(seconds: 1),
       curve: Curves.fastOutSlowIn,
     );
   }
@@ -115,7 +115,7 @@ class _ChatPageState extends State<ChatPage> {
   Widget _buildMessageList() {
     String senderID = _authService.getCurrentUser()!.uid;
     return StreamBuilder(
-      stream: _chatService.getMessages(widget.receiverID, senderID), 
+      stream: _chatService.getMessages(widget.receiverID, senderID),
       builder: (context, snapshot) {
         // errors
         if (snapshot.hasError) {
@@ -127,12 +127,16 @@ class _ChatPageState extends State<ChatPage> {
           return const Text("Loading..");
         }
 
+        // once data is loaded, scroll down
+        WidgetsBinding.instance.addPostFrameCallback((_) => _scrollDown());
+
         // return list view
         return ListView(
           controller: _scrollController,
-          children: snapshot.data!.docs.map((doc) => _buildMessageItem(doc)).toList(),
+          children: snapshot.data!.docs
+              .map((doc) => _buildMessageItem(doc))
+              .toList(),
         );
-
       },
     );
   }
@@ -145,22 +149,26 @@ class _ChatPageState extends State<ChatPage> {
     bool isCurrentUser = data['senderID'] == _authService.getCurrentUser()!.uid;
 
     // align message to the right if sender is the current user, otherwise left
-    var alignment = isCurrentUser ? Alignment.centerRight : Alignment.centerLeft;
+    var alignment = isCurrentUser
+        ? Alignment.centerRight
+        : Alignment.centerLeft;
 
     return Container(
       alignment: alignment,
       child: Column(
-        crossAxisAlignment: isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        crossAxisAlignment: isCurrentUser
+            ? CrossAxisAlignment.end
+            : CrossAxisAlignment.start,
         children: [
           // Text(data["message"]),
           ChatBubble(
-            message: data["message"], 
+            message: data["message"],
             isCurrentUser: isCurrentUser,
             messageId: doc.id,
             userId: data["senderID"],
-          )
+          ),
         ],
-      )
+      ),
     );
   }
 
@@ -177,9 +185,9 @@ class _ChatPageState extends State<ChatPage> {
               hintText: "Type a message",
               obscureText: false,
               focusNode: myFocusNode,
-            )
+            ),
           ),
-      
+
           // send button
           Container(
             decoration: BoxDecoration(
@@ -188,16 +196,12 @@ class _ChatPageState extends State<ChatPage> {
             ),
             margin: const EdgeInsets.only(right: 25),
             child: IconButton(
-              onPressed: sendMessage, 
-              icon: const Icon(
-                Icons.arrow_upward, 
-                color: Colors.white,
-              ),
+              onPressed: sendMessage,
+              icon: const Icon(Icons.arrow_upward, color: Colors.white),
             ),
           ),
-      
         ],
       ),
     );
-  } 
+  }
 }
